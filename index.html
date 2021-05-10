@@ -56,7 +56,7 @@
 		        console.log('lets check');
                 twHelper.innerHTML = "Checking...";
                 iw.style.borderColor = "blue";
-                fetch('http://bogotabackend.herokuapp.com/twitter/?name='+this.value)
+                fetch('https://bogotabackend.herokuapp.com/twitter/?name='+this.value)
                     .then((response) => {
                         return response.json();
                     })
