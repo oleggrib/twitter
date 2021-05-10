@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		#input-wrap {
+			width: 200px;
+			/*height: 40px;*/
+            border: 1px solid transparent;
+            position: relative;
+
+		}
+        #input-wrap input {
+            width: 100%;
+            outline: none;
+            border-width: 0;
+            box-sizing: border-box;
+        }
+        .twitter-helper {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            background-color: #f5f5f5;
+            top: 100%;
+            left: 0;
+        }
+        .twitter-helper img {
+            margin-right: 10px;
+        }
+
+	</style>
+</head>
+<body>
+	<div id="input-wrap">
+		<input type="text" id=twitter>
+		<div class="twitter-helper" style="display*: none;"></div>
+	</div>
+	<script>
+		const iw = document.getElementById('input-wrap');
+		const tw = document.getElementById('twitter');
+		const twHelper = document.querySelector('.twitter-helper');
+        // twHelper.innerHtml = "222";
+        // console.log(twHelper);
+        iw.style.borderColor = "blue";
+        tw.addEventListener('focusout', function(e){
+            twHelper.style.display = "none";
+        })
+        tw.addEventListener('focusin', function(e){
+            twHelper.style.display = "flex";
+        })
+		tw.addEventListener('keyup', function(e){
+		    if (this.value.length > 3) {
+		        console.log('lets check');
+                twHelper.innerHTML = "Checking...";
+                iw.style.borderColor = "blue";
+                fetch('http://bogotabackend.herokuapp.com/twitter/?name='+this.value)
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        if (!data.errors) {
+                            let userName = data.data.name;
+                            let userUrl = data.data.profile_image_url;
+                            let html = "<img src='" + userUrl + "' title='" + data.data.description + "'>" + userName;
+                            console.log(html);
+
+                            twHelper.innerHTML = html;
+                            iw.style.borderColor = "green";
+                        } else {
+                            twHelper.innerHTML = "Not found ...";
+                            iw.style.borderColor = "red";
+
+                        }
+                    });
+            } else {
+                twHelper.innerHTML = "Type 4..15 symbols";
+                iw.style.borderColor = "red";
+            }
+        });
+	</script>
+</body>
+</html>
